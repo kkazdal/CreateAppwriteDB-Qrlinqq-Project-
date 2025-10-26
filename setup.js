@@ -18,6 +18,7 @@ const collections = [
       { key: "qrName", type: "string", size: 200, required: true },
       { key: "createdDate", type: "datetime", required: true },
       { key: "updatedDate", type: "datetime", required: true },
+      { key: "qrCodeType", type: "string", size: 50, required: true },//menu,social,vcard,facebook,instagran,wifi
     ],
   },
   {
@@ -175,7 +176,98 @@ const collections = [
       { key: "qrText", type: "string", size: 20, required: true },
       { key: "qrCodeId", type: "relationship", relationshipType: "oneToOne", relatedCollection: "QRCodes", size: 1000, required: true },
     ],
-  }
+  },
+  {
+    id: "Restaurant",
+    name: "Restaurant",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "restaurantName", type: "string", size: 200, required: true },
+      { key: "description", type: "string", size: 2000, required: false },
+      { key: "restaurantImage", type: "string", size: 1000, required: false },
+      { key: "restaurantImageFileId", type: "string", size: 100, required: false },
+      { key: "selectedFont", type: "string", size: 100, required: true },
+      { key: "mainColor", type: "string", size: 20, required: true },
+      { key: "qrName", type: "string", size: 200, required: true },
+      { key: "qrCodeId", type: "relationship", relationshipType: "oneToOne", relatedCollection: "QRCodes", size: 1000, required: true },
+    ],
+  },
+  {
+    id: "RestaurantCategories",
+    name: "RestaurantCategories",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "restaurantId", type: "relationship", relationshipType: "manyToOne", relatedCollection: "Restaurant", size: 1000, required: true },
+      { key: "name", type: "string", size: 200, required: true },
+      { key: "description", type: "string", size: 1000, required: false },
+    ],
+  },
+  {
+    id: "RestaurantProducts",
+    name: "RestaurantProducts",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "categoryId", type: "relationship", relationshipType: "manyToOne", relatedCollection: "RestaurantCategories", size: 1000, required: true },
+      { key: "name", type: "string", size: 200, required: true },
+      { key: "price", type: "string", size: 50, required: true },
+      { key: "description", type: "string", size: 1000, required: false },
+      { key: "imageUrl", type: "string", size: 1000, required: false },
+      { key: "imageFileId", type: "string", size: 100, required: false },
+    ],
+  },
+  {
+    id: "RestaurantHours",
+    name: "RestaurantHours",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "restaurantId", type: "relationship", relationshipType: "manyToOne", relatedCollection: "Restaurant", size: 1000, required: true },
+      { key: "day", type: "string", size: 20, required: true },
+      { key: "openHour", type: "string", size: 10, required: true },
+      { key: "closeHour", type: "string", size: 10, required: true },
+    ],
+  },
+  {
+    id: "RestaurantPhones",
+    name: "RestaurantPhones",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "restaurantId", type: "relationship", relationshipType: "manyToOne", relatedCollection: "Restaurant", size: 1000, required: true },
+      { key: "label", type: "string", size: 50, required: false },
+      { key: "number", type: "string", size: 50, required: true },
+    ],
+  },
+  {
+    id: "RestaurantEmails",
+    name: "RestaurantEmails",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "restaurantId", type: "relationship", relationshipType: "manyToOne", relatedCollection: "Restaurant", size: 1000, required: true },
+      { key: "label", type: "string", size: 50, required: false },
+      { key: "email", type: "string", size: 100, required: true },
+    ],
+  },
+  {
+    id: "RestaurantWebsites",
+    name: "RestaurantWebsites",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "restaurantId", type: "relationship", relationshipType: "manyToOne", relatedCollection: "Restaurant", size: 1000, required: true },
+      { key: "label", type: "string", size: 50, required: false },
+      { key: "url", type: "string", size: 1000, required: true },
+    ],
+  },
+  {
+    id: "RestaurantSocialLinks",
+    name: "RestaurantSocialLinks",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "restaurantId", type: "relationship", relationshipType: "manyToOne", relatedCollection: "Restaurant", size: 1000, required: true },
+      { key: "platform", type: "string", size: 50, required: true },
+      { key: "url", type: "string", size: 1000, required: true },
+      { key: "icon", type: "string", size: 500, required: false },
+    ],
+  },
+     
 ];
 
 async function setup() {
@@ -225,6 +317,10 @@ async function setup() {
           await databases.createStringAttribute(databaseId, col.id, attr.key, attr.size, attr.required);
         } else if (attr.type === "datetime") {
           await databases.createDatetimeAttribute(databaseId, col.id, attr.key, attr.required);
+        } else if (attr.type === "boolean") {
+          await databases.createBooleanAttribute(databaseId, col.id, attr.key, attr.required);
+        } else if (attr.type === "integer") {
+          await databases.createIntegerAttribute(databaseId, col.id, attr.key, attr.required);
         } else if (attr.type === "relationship") {
           await databases.createRelationshipAttribute(
             databaseId,
