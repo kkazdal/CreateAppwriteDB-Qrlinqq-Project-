@@ -1,4 +1,4 @@
-const { Client, Databases, Permission, Role } = require("node-appwrite");
+const { Client, Databases, Permission, Role, ID, Query } = require("node-appwrite");
 
 const client = new Client()
   .setEndpoint("http://localhost/v1")       // Appwrite endpoint
@@ -19,6 +19,17 @@ const collections = [
       { key: "createdDate", type: "datetime", required: true },
       { key: "updatedDate", type: "datetime", required: true },
       { key: "qrCodeType", type: "string", size: 50, required: true },//menu,social,vcard,facebook,instagran,wifi
+      { key: "status", type: "relationship", relationshipType: "manyToOne", relatedCollection: "QRStatusEnum", size: 1000, required: true },
+    ],
+  },
+  {
+    id: "ContactUs",
+    name: "ContactUs",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "name", type: "string", size: 100, required: true },
+      { key: "email", type: "string", size: 100, required: true },
+      { key: "message", type: "string", size: 1000, required: true },
     ],
   },
   {
@@ -267,7 +278,22 @@ const collections = [
       { key: "icon", type: "string", size: 500, required: false },
     ],
   },
-     
+  {
+    id: "QRStatusEnum",
+    name: "QRStatusEnum",
+    attributes: [
+      { key: "statusKey", type: "string", size: 50, required: true },
+      { key: "statusLabel", type: "string", size: 100, required: true },
+      { key: "color", type: "string", size: 20, required: false },
+      { key: "order", type: "integer", required: false },
+    ],
+    initialData: [
+      { statusKey: "active", statusLabel: "Aktif", color: "green", order: 1 },
+      { statusKey: "inactive", statusLabel: "Pasif", color: "gray", order: 2 },
+      { statusKey: "deleted", statusLabel: "Silindi", color: "red", order: 3 },
+    ],
+  },
+
 ];
 
 async function setup() {
@@ -334,6 +360,64 @@ async function setup() {
         console.log(`   ✅ Attribute created: ${attr.key}`);
       } catch (error) {
         console.log(`   ℹ️ Attribute already exists: ${attr.key}`, error.message);
+      }
+    }
+
+    // Insert initial data if exists (for enum collections)
+    if (col.initialData && Array.isArray(col.initialData)) {
+      console.log(`   📝 Inserting initial data for: ${col.name}`);
+      // Wait a bit for attributes to be ready
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      for (const data of col.initialData) {
+        try {
+          // Check if document already exists by statusKey
+          let existingDoc = null;
+          if (col.id === "QRStatusEnum" && data.statusKey) {
+            try {
+              const docs = await databases.listDocuments(databaseId, col.id, [
+                Query.equal("statusKey", data.statusKey)
+              ]);
+              if (docs.documents.length > 0) {
+                existingDoc = docs.documents[0];
+              }
+            } catch (e) {
+              // Collection might not be ready yet, continue
+            }
+          }
+
+          if (existingDoc) {
+            // Update existing document
+            await databases.updateDocument(
+              databaseId,
+              col.id,
+              existingDoc.$id,
+              data,
+              [
+                Permission.read(Role.any()),
+                Permission.update(Role.users()),
+                Permission.delete(Role.users())
+              ]
+            );
+            console.log(`   ✅ Updated document: ${data.statusKey || JSON.stringify(data)}`);
+          } else {
+            // Create new document
+            await databases.createDocument(
+              databaseId,
+              col.id,
+              ID.unique(),
+              data,
+              [
+                Permission.read(Role.any()),
+                Permission.update(Role.users()),
+                Permission.delete(Role.users())
+              ]
+            );
+            console.log(`   ✅ Created document: ${data.statusKey || JSON.stringify(data)}`);
+          }
+        } catch (error) {
+          console.log(`   ⚠️ Could not insert data for ${col.name}:`, error.message);
+        }
       }
     }
   }
