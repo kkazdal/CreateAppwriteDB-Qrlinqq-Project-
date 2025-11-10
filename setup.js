@@ -11,6 +11,20 @@ const databaseId = "68e3df8e003bab8945f5";
 
 const collections = [
   {
+    id: "QRStatusEnum",
+    name: "QRStatusEnum",
+    attributes: [
+      { key: "statusKey", type: "string", size: 50, required: true },
+      { key: "statusLabel", type: "string", size: 100, required: true },
+      { key: "color", type: "string", size: 20, required: false },
+      { key: "order", type: "integer", required: false },
+    ],
+    initialData: [
+      { statusKey: "active", statusLabel: "Active", color: "green", order: 1 },
+      { statusKey: "inactive", statusLabel: "Inactive", color: "gray", order: 2 },
+    ],
+  },
+  {
     id: "QRCodes",
     name: "QRCodes",
     attributes: [
@@ -278,21 +292,6 @@ const collections = [
       { key: "icon", type: "string", size: 500, required: false },
     ],
   },
-  {
-    id: "QRStatusEnum",
-    name: "QRStatusEnum",
-    attributes: [
-      { key: "statusKey", type: "string", size: 50, required: true },
-      { key: "statusLabel", type: "string", size: 100, required: true },
-      { key: "color", type: "string", size: 20, required: false },
-      { key: "order", type: "integer", required: false },
-    ],
-    initialData: [
-      { statusKey: "active", statusLabel: "Aktif", color: "green", order: 1 },
-      { statusKey: "inactive", statusLabel: "Pasif", color: "gray", order: 2 },
-      { statusKey: "deleted", statusLabel: "Silindi", color: "red", order: 3 },
-    ],
-  },
 
 ];
 
@@ -368,7 +367,7 @@ async function setup() {
       console.log(`   📝 Inserting initial data for: ${col.name}`);
       // Wait a bit for attributes to be ready
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       for (const data of col.initialData) {
         try {
           // Check if document already exists by statusKey
