@@ -1,11 +1,16 @@
 const { Client, Databases, Permission, Role, ID, Query } = require("node-appwrite");
 
-const client = new Client()
+const clientLocal = new Client()
   .setEndpoint("http://localhost/v1")       // Appwrite endpoint
   .setProject("68e2df4f002bb47f72d7")            // Project ID
   .setKey("standard_3e97cda42c92db6e3267612a93b07b17d6a941cfa6f588d2cfa1a8b4a22b6cef7c0aea27586ea1c50899c184c95931844df1c26b85f57bb85d185b727884952cd141bbf57945cc14cbb7a6527d1593aa84044dd0a4d8ca5834cff44afd69825d95eb01fa8913791aab02b2e50150195281efb25663e08c669b4794aed2cdf6d7");                  // API Key (Database perms olan)
 
-const databases = new Databases(client);
+const clientProduction = new Client()
+  .setEndpoint("https://appwrite.qrlinqq.io/v1")       // Appwrite endpoint
+  .setProject("691755e2000be3a973b8")            // Project ID
+  .setKey("standard_791162ef459ac68617f04b3f88f8ecf7c0c62f428f0b1330960b88b05ec058d35aa4d72f608d7577014f0d41590722a44b21845c690a04037de3a6a37c6d76b4af96e648f9918ba287844ad2db4fd5ed2f6979cd9dbfc39b824e0b33d444c898cd6d79214a839b479dda5155647cadf7e0fbf7636ac928c228d6dc4c236f34c0");                  // API Key (Database perms olan)
+
+const databases = new Databases(clientLocal);
 
 const databaseId = "68e3df8e003bab8945f5";
 
