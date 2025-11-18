@@ -5,14 +5,18 @@ const clientLocal = new Client()
   .setProject("68e2df4f002bb47f72d7")            // Project ID
   .setKey("standard_3e97cda42c92db6e3267612a93b07b17d6a941cfa6f588d2cfa1a8b4a22b6cef7c0aea27586ea1c50899c184c95931844df1c26b85f57bb85d185b727884952cd141bbf57945cc14cbb7a6527d1593aa84044dd0a4d8ca5834cff44afd69825d95eb01fa8913791aab02b2e50150195281efb25663e08c669b4794aed2cdf6d7");                  // API Key (Database perms olan)
 
-const clientProduction = new Client()
-  .setEndpoint("https://appwrite.qrlinqq.io/v1")       // Appwrite endpoint
-  .setProject("691755e2000be3a973b8")            // Project ID
-  .setKey("standard_791162ef459ac68617f04b3f88f8ecf7c0c62f428f0b1330960b88b05ec058d35aa4d72f608d7577014f0d41590722a44b21845c690a04037de3a6a37c6d76b4af96e648f9918ba287844ad2db4fd5ed2f6979cd9dbfc39b824e0b33d444c898cd6d79214a839b479dda5155647cadf7e0fbf7636ac928c228d6dc4c236f34c0");                  // API Key (Database perms olan)
+const databaseId = "68e3df8e003bab8945f5";//local database id
+
+
+//const clientProduction = new Client()
+//  .setEndpoint("https://appwrite.qrlinqq.com/v1")       // Appwrite endpoint
+//  .setProject("691c720f0008c1f69263")            // Project ID
+//  .setKey("standard_048dbad6a5eaea50eb0a17b0b9f3cd8b4da8fc88e2c5b036b492903588cc6f50636ba13640060e94b90c372c715770cd1ee83b87a81df3fd2e8754f5bed4ec9a0677c20e951727083a865cc1e8c9991384358b740733347751641c6bba1b82e282308787e449ad69bcacaf76beda76af6681a07d9f00cc54b6b5430b7bdba219");                  // API Key (Database perms olan)
+//
+//const databaseId = "6919ba550024e46793f4";//production database id
 
 const databases = new Databases(clientLocal);
 
-const databaseId = "68e3df8e003bab8945f5";
 
 const collections = [
   {
@@ -27,6 +31,24 @@ const collections = [
     initialData: [
       { statusKey: "active", statusLabel: "Active", color: "green", order: 1 },
       { statusKey: "inactive", statusLabel: "Inactive", color: "gray", order: 2 },
+    ],
+  },
+  {
+    id: "BlogTypeEnum",
+    name: "BlogTypeEnum",
+    attributes: [
+      { key: "typeKey", type: "string", size: 50, required: true },
+      { key: "typeLabel", type: "string", size: 100, required: true },
+      { key: "color", type: "string", size: 20, required: false },
+      { key: "order", type: "integer", required: false },
+    ],
+    initialData: [
+      { typeKey: "education", typeLabel: "Educational Content", color: "yellow", order: 8 },//Temel bilgilendirme
+      { typeKey: "use-case", typeLabel: "Use Case", color: "cyan", order: 10 },//Kullanım örneği
+      { typeKey: "marketing", typeLabel: "Marketing", color: "indigo", order: 11 },//Pazarlama
+      { typeKey: "design", typeLabel: "Design", color: "rose", order: 13 },//Tasarım
+      { typeKey: "dev", typeLabel: "Developer", color: "gray", order: 14 },//Geliştirme
+      { typeKey: "comparison", typeLabel: "Comparison", color: "black", order: 15 }//Karşılaştırma
     ],
   },
   {
@@ -297,6 +319,23 @@ const collections = [
       { key: "icon", type: "string", size: 500, required: false },
     ],
   },
+  {
+    id: "Blogs",
+    name: "Blogs",
+    attributes: [
+      { key: "userId", type: "string", size: 50, required: true },
+      { key: "title", type: "string", size: 200, required: true },
+      { key: "description", type: "string", size: 500, required: false },
+      { key: "content", type: "string", size: 10000, required: true },
+      { key: "blogType", type: "relationship", relationshipType: "manyToOne", relatedCollection: "BlogTypeEnum", size: 1000, required: true },
+      { key: "image", type: "string", size: 1000, required: false },
+      { key: "imageFileId", type: "string", size: 100, required: false },
+      { key: "slug", type: "string", size: 200, required: false },
+      { key: "createdDate", type: "datetime", required: true },
+      { key: "updatedDate", type: "datetime", required: true },
+    ],
+    readOnly: true, // Sadece okunabilir - herkes okuyabilir ama create/update/delete yapamaz
+  },
 
 ];
 
@@ -328,15 +367,26 @@ async function setup() {
 
     // Set collection-level permissions
     try {
-      const permissions = [
-        Permission.read(Role.any()), // Herkes okuyabilir
-        Permission.create(Role.users()), // Kayıtlı tüm kullanıcılar oluşturabilir
-        Permission.update(Role.users()), // Kayıtlı tüm kullanıcılar güncelleyebilir
-        Permission.delete(Role.users()), // Kayıtlı tüm kullanıcılar silebilir
-      ];
+      let permissions;
+      if (col.readOnly) {
+        // Sadece okunabilir koleksiyonlar için
+        permissions = [
+          Permission.read(Role.any()), // Herkes okuyabilir
+          // create, update, delete izinleri yok
+        ];
+        console.log(`   🔐 Read-only permissions set for: ${col.name}`);
+      } else {
+        // Normal koleksiyonlar için
+        permissions = [
+          Permission.read(Role.any()), // Herkes okuyabilir
+          Permission.create(Role.users()), // Kayıtlı tüm kullanıcılar oluşturabilir
+          Permission.update(Role.users()), // Kayıtlı tüm kullanıcılar güncelleyebilir
+          Permission.delete(Role.users()), // Kayıtlı tüm kullanıcılar silebilir
+        ];
+        console.log(`   🔐 Permissions set for: ${col.name}`);
+        console.log(`   📝 Note: Use userId field in queries to ensure users only access their own data`);
+      }
       await databases.updateCollection(databaseId, col.id, col.name, permissions);
-      console.log(`   🔐 Permissions set for: ${col.name}`);
-      console.log(`   📝 Note: Use userId field in queries to ensure users only access their own data`);
     } catch (permError) {
       console.log(`   ⚠️ Could not set permissions for: ${col.name}`, permError.message);
     }
@@ -375,12 +425,23 @@ async function setup() {
 
       for (const data of col.initialData) {
         try {
-          // Check if document already exists by statusKey
+          // Check if document already exists by statusKey or typeKey
           let existingDoc = null;
           if (col.id === "QRStatusEnum" && data.statusKey) {
             try {
               const docs = await databases.listDocuments(databaseId, col.id, [
                 Query.equal("statusKey", data.statusKey)
+              ]);
+              if (docs.documents.length > 0) {
+                existingDoc = docs.documents[0];
+              }
+            } catch (e) {
+              // Collection might not be ready yet, continue
+            }
+          } else if (col.id === "BlogTypeEnum" && data.typeKey) {
+            try {
+              const docs = await databases.listDocuments(databaseId, col.id, [
+                Query.equal("typeKey", data.typeKey)
               ]);
               if (docs.documents.length > 0) {
                 existingDoc = docs.documents[0];
@@ -403,7 +464,7 @@ async function setup() {
                 Permission.delete(Role.users())
               ]
             );
-            console.log(`   ✅ Updated document: ${data.statusKey || JSON.stringify(data)}`);
+            console.log(`   ✅ Updated document: ${data.statusKey || data.typeKey || JSON.stringify(data)}`);
           } else {
             // Create new document
             await databases.createDocument(
@@ -417,7 +478,7 @@ async function setup() {
                 Permission.delete(Role.users())
               ]
             );
-            console.log(`   ✅ Created document: ${data.statusKey || JSON.stringify(data)}`);
+            console.log(`   ✅ Created document: ${data.statusKey || data.typeKey || JSON.stringify(data)}`);
           }
         } catch (error) {
           console.log(`   ⚠️ Could not insert data for ${col.name}:`, error.message);
