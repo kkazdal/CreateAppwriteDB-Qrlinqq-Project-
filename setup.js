@@ -44,11 +44,11 @@ const collections = [
     ],
     initialData: [
       { typeKey: "education", typeLabel: "Educational Content", color: "yellow", order: 8 },//Temel bilgilendirme
-      { typeKey: "use-case", typeLabel: "Use Case", color: "cyan", order: 10 },//Kullanım örneği
-      { typeKey: "marketing", typeLabel: "Marketing", color: "indigo", order: 11 },//Pazarlama
-      { typeKey: "design", typeLabel: "Design", color: "rose", order: 13 },//Tasarım
-      { typeKey: "dev", typeLabel: "Developer", color: "gray", order: 14 },//Geliştirme
-      { typeKey: "comparison", typeLabel: "Comparison", color: "black", order: 15 }//Karşılaştırma
+      { typeKey: "trends", typeLabel: "Trends & Innovation", color: "indigo", order: 11 },//Pazarlama
+      { typeKey: "design", typeLabel: "Design & Creativity", color: "rose", order: 13 },//Tasarım
+      { typeKey: "security", typeLabel: "QR Security", color: "black", order: 15 },//Karşılaştırma
+      { typeKey: "history", typeLabel: "History & Technical Insights", color: "green", order: 16 },//Business,
+      { typeKey: "lifestyle", typeLabel: "Lifestyle", color: "gray", order: 14 },//Technology,
     ],
   },
   {
