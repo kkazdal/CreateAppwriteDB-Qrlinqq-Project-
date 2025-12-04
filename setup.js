@@ -1,21 +1,21 @@
 const { Client, Databases, Permission, Role, ID, Query } = require("node-appwrite");
 
-const clientLocal = new Client()
-  .setEndpoint("http://localhost/v1")       // Appwrite endpoint
-  .setProject("68e2df4f002bb47f72d7")            // Project ID
-  .setKey("standard_3e97cda42c92db6e3267612a93b07b17d6a941cfa6f588d2cfa1a8b4a22b6cef7c0aea27586ea1c50899c184c95931844df1c26b85f57bb85d185b727884952cd141bbf57945cc14cbb7a6527d1593aa84044dd0a4d8ca5834cff44afd69825d95eb01fa8913791aab02b2e50150195281efb25663e08c669b4794aed2cdf6d7");                  // API Key (Database perms olan)
+//const clientLocal = new Client()
+//  .setEndpoint("http://localhost/v1")       // Appwrite endpoint
+//  .setProject("68e2df4f002bb47f72d7")            // Project ID
+//  .setKey("standard_3e97cda42c92db6e3267612a93b07b17d6a941cfa6f588d2cfa1a8b4a22b6cef7c0aea27586ea1c50899c184c95931844df1c26b85f57bb85d185b727884952cd141bbf57945cc14cbb7a6527d1593aa84044dd0a4d8ca5834cff44afd69825d95eb01fa8913791aab02b2e50150195281efb25663e08c669b4794aed2cdf6d7");                  // API Key (Database perms olan)
 
-const databaseId = "68e3df8e003bab8945f5";//local database id
+//const databaseId = "68e3df8e003bab8945f5";//local database id
 
 
-//const clientProduction = new Client()
-//  .setEndpoint("https://appwrite.qrlinqq.com/v1")       // Appwrite endpoint
-//  .setProject("691c720f0008c1f69263")            // Project ID
-//  .setKey("standard_048dbad6a5eaea50eb0a17b0b9f3cd8b4da8fc88e2c5b036b492903588cc6f50636ba13640060e94b90c372c715770cd1ee83b87a81df3fd2e8754f5bed4ec9a0677c20e951727083a865cc1e8c9991384358b740733347751641c6bba1b82e282308787e449ad69bcacaf76beda76af6681a07d9f00cc54b6b5430b7bdba219");                  // API Key (Database perms olan)
-//
-//const databaseId = "6919ba550024e46793f4";//production database id
+const clientProduction = new Client()
+  .setEndpoint("https://appwrite.qrlinqq.com/v1")       // Appwrite endpoint
+  .setProject("691c720f0008c1f69263")            // Project ID
+  .setKey("standard_048dbad6a5eaea50eb0a17b0b9f3cd8b4da8fc88e2c5b036b492903588cc6f50636ba13640060e94b90c372c715770cd1ee83b87a81df3fd2e8754f5bed4ec9a0677c20e951727083a865cc1e8c9991384358b740733347751641c6bba1b82e282308787e449ad69bcacaf76beda76af6681a07d9f00cc54b6b5430b7bdba219");                  // API Key (Database perms olan)
 
-const databases = new Databases(clientLocal);
+const databaseId = "6919ba550024e46793f4";//production database id
+
+const databases = new Databases(clientProduction);
 
 
 const collections = [
