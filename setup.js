@@ -10,10 +10,10 @@ const { Client, Databases, Permission, Role, ID, Query } = require("node-appwrit
 
 const clientProduction = new Client()
   .setEndpoint("https://appwrite.qrlinqq.com/v1")       // Appwrite endpoint
-  .setProject("691c720f0008c1f69263")            // Project ID
-  .setKey("standard_048dbad6a5eaea50eb0a17b0b9f3cd8b4da8fc88e2c5b036b492903588cc6f50636ba13640060e94b90c372c715770cd1ee83b87a81df3fd2e8754f5bed4ec9a0677c20e951727083a865cc1e8c9991384358b740733347751641c6bba1b82e282308787e449ad69bcacaf76beda76af6681a07d9f00cc54b6b5430b7bdba219");                  // API Key (Database perms olan)
+  .setProject("6935d7b4002a4029ecab")            // Project ID
+  .setKey("standard_3e055101e73844b403696bd1e8336fb9a75ba5414b02a93f0d818ec35ee63d6470194e786673a94104d3d4d8179c966d152ccbac407dc8b07da44c3684c5b6eeb5b9b598914bc73af67d0c2535ed1024f9fc394ea657f62c4f4940da0d626dfca59c13bde104976a4821ec3c15c11f536b7246c596286af2580c86cce061afb6");                  // API Key (Database perms olan)
 
-const databaseId = "6919ba550024e46793f4";//production database id
+const databaseId = "6935d985000de5439b1c";//production database id
 
 const databases = new Databases(clientProduction);
 
@@ -37,18 +37,18 @@ const collections = [
     id: "BlogTypeEnum",
     name: "BlogTypeEnum",
     attributes: [
-      { key: "typeKey", type: "string", size: 50, required: true },
+      { key: "blogType", type: "string", size: 50, required: true },
       { key: "typeLabel", type: "string", size: 100, required: true },
       { key: "color", type: "string", size: 20, required: false },
       { key: "order", type: "integer", required: false },
     ],
     initialData: [
-      { typeKey: "education", typeLabel: "Educational Content", color: "yellow", order: 8 },//Temel bilgilendirme
-      { typeKey: "trends", typeLabel: "Trends & Innovation", color: "indigo", order: 11 },//Pazarlama
-      { typeKey: "design", typeLabel: "Design & Creativity", color: "rose", order: 13 },//Tasarım
-      { typeKey: "security", typeLabel: "QR Security", color: "black", order: 15 },//Karşılaştırma
-      { typeKey: "history", typeLabel: "History & Technical Insights", color: "green", order: 16 },//Business,
-      { typeKey: "lifestyle", typeLabel: "Lifestyle", color: "gray", order: 14 },//Technology,
+      { blogType: "education", typeLabel: "Educational Content", color: "yellow", order: 8 },//Temel bilgilendirme
+      { blogType: "trends", typeLabel: "Trends & Innovation", color: "indigo", order: 11 },//Pazarlama
+      { blogType: "design", typeLabel: "Design & Creativity", color: "rose", order: 13 },//Tasarım
+      { blogType: "security", typeLabel: "QR Security", color: "black", order: 15 },//Karşılaştırma
+      { blogType: "history", typeLabel: "History & Technical Insights", color: "green", order: 16 },//Business,
+      { blogType: "lifestyle", typeLabel: "Lifestyle", color: "gray", order: 14 },//Technology,
     ],
   },
   {
